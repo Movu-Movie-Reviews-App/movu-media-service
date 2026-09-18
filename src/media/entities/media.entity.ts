@@ -1,5 +1,5 @@
 import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
-import { MediaType } from "../enums/media.enum";
+import { MediaPurposeEnum } from "../enums/media-purpose.enum";
 import { MediaState } from "../enums/media.state";
 
 @Entity()
@@ -14,9 +14,9 @@ export class MediaEntity {
 
     @Column({
         type: 'enum',
-        enum: MediaType,
+        enum: MediaPurposeEnum,
     })
-    type: MediaType;
+    purpose: MediaPurposeEnum;
 
     @Column({
         type: 'text',
