@@ -73,10 +73,10 @@ export class MediaService {
     return `${ownerId}/${purpose}/${timestamp}-${randomString}`;
   }
 
-  async getDownloadUrl(mediaId: string): Promise<GetDownloadUrlResponseDto> {
-    const media = await this.mediaRepository.findOne({ where: { id: mediaId } });
+  async getDownloadUrl(mediaId: string, mediaPurpose: MediaPurposeEnum, userId: string): Promise<GetDownloadUrlResponseDto> {
+    const media = await this.mediaRepository.findOne({ where: { id: mediaId, purpose: mediaPurpose, ownerId: userId } });
 
-    if (!media) throw new NotFoundException(`Media with ID ${mediaId} not found.`);
+    if (!media) throw new NotFoundException(`Media with ID ${mediaId} and purpose ${mediaPurpose} not found.`);
 
     return {
       mediaId: media.id,

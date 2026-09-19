@@ -2,6 +2,8 @@ import { Controller } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import { MediaService } from './media.service';
 import { CreateMediaRequestDto } from './dto/request/create-media.dto';
+import { MediaPurposeEnum } from './enums/media-purpose.enum';
+import { GetDownloadUrlRequestDto } from './dto/request/get-download-url-request.dto';
 
 @Controller()
 export class MediaController {
@@ -18,8 +20,8 @@ export class MediaController {
   }
 
   @MessagePattern('mediaService.getDownloadUrl')
-  getDownloadUrl(@Payload() mediaId: string) {
-    return this.mediaService.getDownloadUrl(mediaId);
+  getDownloadUrl(@Payload() getDownloadUrlRequestDto: GetDownloadUrlRequestDto) {
+    return this.mediaService.getDownloadUrl(getDownloadUrlRequestDto.mediaId, getDownloadUrlRequestDto.mediaPurpose, getDownloadUrlRequestDto.ownerId);
   }
 
 }
