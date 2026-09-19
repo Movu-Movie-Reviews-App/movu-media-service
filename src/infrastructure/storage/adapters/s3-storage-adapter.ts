@@ -3,6 +3,7 @@ import { StorageAdapter } from "../interfaces/storage-adapter.interface";
 import { envs } from "src/config";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner/dist-types/getSignedUrl";
 import { Injectable } from "@nestjs/common";
+import { MEDIA_CONFIG } from "src/media/config/media-config";
 
 @Injectable()
 export class S3StorageAdapter implements StorageAdapter {
@@ -29,7 +30,7 @@ export class S3StorageAdapter implements StorageAdapter {
             ContentType: contentType
         });
 
-        return getSignedUrl(this.s3Client, command, { expiresIn: 300 });
+        return getSignedUrl(this.s3Client, command, { expiresIn: MEDIA_CONFIG.uploadUrlExpirationTime });
 
 
     }
@@ -40,7 +41,7 @@ export class S3StorageAdapter implements StorageAdapter {
             Key: objectKey
         });
 
-        return getSignedUrl(this.s3Client, command, { expiresIn: 300 });
+        return getSignedUrl(this.s3Client, command, { expiresIn: MEDIA_CONFIG.downloadUrlExpirationTime });
 
     }
     async deleteObject(objectKey: string): Promise<void> {

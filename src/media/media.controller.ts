@@ -1,35 +1,25 @@
 import { Controller } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import { MediaService } from './media.service';
-import { CreateMediaDto } from './dto/create-media.dto';
-import { UpdateMediaDto } from './dto/update-media.dto';
+import { CreateMediaRequestDto } from './dto/request/create-media.dto';
 
 @Controller()
 export class MediaController {
-  constructor(private readonly mediaService: MediaService) {}
+  constructor(private readonly mediaService: MediaService) { }
 
-  @MessagePattern('createMedia')
-  create(@Payload() createMediaDto: CreateMediaDto) {
-    return this.mediaService.create(createMediaDto);
+  @MessagePattern('mediaService.createMedia')
+  uploadMedia(@Payload() createMediaDto: CreateMediaRequestDto) {
+    return this.mediaService.uploadMedia(createMediaDto);
   }
 
-  @MessagePattern('findAllMedia')
-  findAll() {
-    return this.mediaService.findAll();
+  @MessagePattern('mediaService.completeMediaUpload')
+  completeMediaUpload(@Payload() mediaId: string) {
+    return this.mediaService.completeMediaUpload(mediaId);
   }
 
-  @MessagePattern('findOneMedia')
-  findOne(@Payload() id: number) {
-    return this.mediaService.findOne(id);
+  @MessagePattern('mediaService.getDownloadUrl')
+  getDownloadUrl(@Payload() mediaId: string) {
+    return this.mediaService.getDownloadUrl(mediaId);
   }
 
-  @MessagePattern('updateMedia')
-  update(@Payload() updateMediaDto: UpdateMediaDto) {
-    return this.mediaService.update(updateMediaDto.id, updateMediaDto);
-  }
-
-  @MessagePattern('removeMedia')
-  remove(@Payload() id: number) {
-    return this.mediaService.remove(id);
-  }
 }

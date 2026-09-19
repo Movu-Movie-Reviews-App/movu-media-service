@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
-import { CreateMediaDto } from './dto/create-media.dto';
+import { CreateMediaRequestDto } from './dto/request/create-media.dto';
 import { FILE_RULES } from './config/file-rules';
 import { InjectRepository } from '@nestjs/typeorm';
 import { MediaEntity } from './entities/media.entity';
@@ -7,6 +7,9 @@ import { Repository } from 'typeorm';
 import { MediaState } from './enums/media.state';
 import { MediaPurposeEnum } from './enums/media-purpose.enum';
 import { StorageService } from 'src/infrastructure/storage/storage.service';
+import { CreateMediaResponseDto } from './dto/response/create-media-response.dto';
+import { MEDIA_CONFIG } from './config/media-config';
+import { GetDownloadUrlResponseDto } from './dto/response/get-download-url.dto';
 
 @Injectable()
 export class MediaService {
@@ -17,7 +20,7 @@ export class MediaService {
 
   ) { }
 
-  async uploadMedia(createMediaDto: CreateMediaDto) {
+  async uploadMedia(createMediaDto: CreateMediaRequestDto): Promise<CreateMediaResponseDto> {
     this.validateFile(createMediaDto);
     const objectKey = await this.generateObjectKey(
       createMediaDto.ownerId,
@@ -35,7 +38,11 @@ export class MediaService {
     });
 
     await this.mediaRepository.save(media);
-    return this.storageService.generateUploadUrl(objectKey, createMediaDto.contentType);
+    return {
+      mediaId: media.id,
+      preSignedUrl: await this.storageService.generateUploadUrl(objectKey, createMediaDto.contentType),
+      expirationTime: MEDIA_CONFIG.uploadUrlExpirationTime,
+    };
   }
 
   async completeMediaUpload(mediaId: string) {
@@ -66,12 +73,19 @@ export class MediaService {
     return `${ownerId}/${purpose}/${timestamp}-${randomString}`;
   }
 
-  private async findMedia(createMediaDto: CreateMediaDto) {
-    const media = await this.mediaRepository.findOne({ where: { contentType: createMediaDto.contentType, ownerId: createMediaDto.ownerId, purpose: createMediaDto.purpose } });
-    return media;
+  async getDownloadUrl(mediaId: string): Promise<GetDownloadUrlResponseDto> {
+    const media = await this.mediaRepository.findOne({ where: { id: mediaId } });
+
+    if (!media) throw new NotFoundException(`Media with ID ${mediaId} not found.`);
+
+    return {
+      mediaId: media.id,
+      url: await this.storageService.generateDownloadUrl(media.objectKey),
+      expirationTime: MEDIA_CONFIG.downloadUrlExpirationTime,
+    };
   }
 
-  private validateFile(createMediaDto: CreateMediaDto) {
+  private validateFile(createMediaDto: CreateMediaRequestDto) {
     const rules = FILE_RULES[createMediaDto.purpose];
 
     if (!rules) throw new BadRequestException(`No file rules defined for purpose: ${createMediaDto.purpose}`);

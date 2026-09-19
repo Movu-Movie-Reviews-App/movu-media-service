@@ -1,8 +1,8 @@
 import { IsEnum, IsPositive, IsString, IsUUID, Max, Min } from "class-validator"
-import { MediaPurposeEnum } from "../enums/media-purpose.enum"
+import { MediaPurposeEnum } from "../../enums/media-purpose.enum"
 
 
-export class CreateMediaDto {
+export class CreateMediaRequestDto {
 
     @IsUUID()
     ownerId: string
