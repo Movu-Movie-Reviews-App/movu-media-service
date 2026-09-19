@@ -40,7 +40,6 @@ export class MediaEntity {
     })
     state: MediaState;
 
-
     @UpdateDateColumn({
         type: 'timestamp',
     })

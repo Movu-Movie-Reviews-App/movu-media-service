@@ -1,7 +1,7 @@
 import { MediaPurposeEnum } from "../enums/media-purpose.enum";
 import { FileRule } from "../interfaces/file-rule.interface";
 
-export const FileRules: Record<MediaPurposeEnum, FileRule> = {
+export const FILE_RULES: Record<MediaPurposeEnum, FileRule> = {
 
     [MediaPurposeEnum.AVATAR]: {
         allowedMimeTypes: ['image/jpeg', 'image/png'],

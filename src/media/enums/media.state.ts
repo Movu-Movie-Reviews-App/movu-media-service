@@ -1,5 +1,5 @@
 export enum MediaState {
-    ACTIVE = 'active',
-    INACTIVE = 'inactive',
-    DELETED = 'deleted',
+    COMPLETED = 'completed',
+    PENDING = 'pending',
+    FAILED = 'failed',
 }

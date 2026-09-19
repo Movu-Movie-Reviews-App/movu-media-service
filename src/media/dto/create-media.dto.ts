@@ -5,7 +5,7 @@ import { MediaPurposeEnum } from "../enums/media-purpose.enum"
 export class CreateMediaDto {
 
     @IsUUID()
-    owner: string
+    ownerId: string
     @IsEnum(MediaPurposeEnum)
     purpose: MediaPurposeEnum
 
