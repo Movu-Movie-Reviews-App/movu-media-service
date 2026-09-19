@@ -11,8 +11,6 @@ interface EnvVars {
     DB_PASSWORD: string;
     DB_NAME: string;
 
-    PORT: number;
-
     NATS_SERVERS: string[];
 
     AWS_REGION: string;
@@ -24,8 +22,7 @@ interface EnvVars {
 }
 
 const envsSchema = Joi.object({
-    PORT: joi.number().required(),
-    NATS_SERVERS: joi.array().items(joi.string()).required(),
+    NATS_SERVERS: joi.array().items(joi.string()).single().required(),
     DB_HOST: joi.string().required(),
     DB_PORT: joi.number().required(),
     DB_USERNAME: joi.string().required(),
@@ -46,7 +43,6 @@ if (error) {
 const envVars: EnvVars = value;
 
 export const envs = {
-    port: envVars.PORT,
     natsServers: envVars.NATS_SERVERS,
     dbHost: envVars.DB_HOST,
     dbPort: envVars.DB_PORT,
