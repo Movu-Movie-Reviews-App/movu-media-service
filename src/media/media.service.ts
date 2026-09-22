@@ -45,8 +45,10 @@ export class MediaService {
     };
   }
 
-  async completeMediaUpload(mediaId: string) {
-    const media = await this.mediaRepository.findOne({ where: { id: mediaId } });
+  async completeMediaUpload(mediaId: string, purpose: MediaPurposeEnum, ownerId: string) {
+    // El lookup va acotado al dueno: el mediaId viaja por el cliente, asi que
+    // buscar solo por id dejaria completar (y borrar) el avatar de otro usuario.
+    const media = await this.mediaRepository.findOne({ where: { id: mediaId, purpose, ownerId } });
 
     if (!media) throw new NotFoundException(`Media with ID ${mediaId} not found.`);
 
@@ -65,6 +67,8 @@ export class MediaService {
 
     media.state = MediaState.COMPLETED;
     await this.mediaRepository.save(media);
+
+    return { mediaId: media.id, state: media.state };
   }
 
   private async generateObjectKey(ownerId: string, purpose: MediaPurposeEnum): Promise<string> {

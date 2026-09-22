@@ -17,7 +17,7 @@ export class S3StorageAdapter implements StorageAdapter {
             credentials: {
                 accessKeyId: envs.awsAccessKeyId,
                 secretAccessKey: envs.awsSecretAccessKey
-            }
+            },
         });
         this.bucketName = envs.awsBucketName;
     }

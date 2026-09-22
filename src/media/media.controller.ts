@@ -3,6 +3,7 @@ import { MessagePattern, Payload } from '@nestjs/microservices';
 import { MediaService } from './media.service';
 import { CreateMediaRequestDto } from './dto/request/create-media.dto';
 import { GetDownloadUrlRequestDto } from './dto/request/get-download-url-request.dto';
+import { CompleteUploadRequestDto } from './dto/request/complete-upload-request.dto';
 
 @Controller()
 export class MediaController {
@@ -14,8 +15,8 @@ export class MediaController {
   }
 
   @MessagePattern('media.completeMediaUpload')
-  completeMediaUpload(@Payload() mediaId: string) {
-    return this.mediaService.completeMediaUpload(mediaId);
+  completeMediaUpload(@Payload() completeUploadDto: CompleteUploadRequestDto) {
+    return this.mediaService.completeMediaUpload(completeUploadDto.mediaId, completeUploadDto.mediaPurpose, completeUploadDto.ownerId);
   }
 
   @MessagePattern('media.getDownloadUrl')
